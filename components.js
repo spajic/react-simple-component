@@ -1,8 +1,12 @@
 class StoryBox extends React.Component { // Реакт-компонент всегд наследуется от React.Component
   render() { // Всегда должен определять функцию render()
-    const topicsList = [new Date().toTimeString(), 'HTML', 'JavaScript', 'React'];
+    const topicsList = ['HTML', 'JavaScript', 'React'];
+    let now = new Date();
     return(
-      <ul>{topicsList.map( topic => <li>{topic}</li> )}</ul>
+      <div>
+        <h3>Now: {now.toTimeString()}</h3>
+        <ul>{topicsList.map( topic => <li>{topic}</li> )}</ul>
+      </div>
     ); // Кавычки правда не нужны, из-за jsx
   }
 }
