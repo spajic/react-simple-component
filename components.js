@@ -1,6 +1,9 @@
 class StoryBox extends React.Component { // Реакт-компонент всегд наследуется от React.Component
   render() { // Всегда должен определять функцию render()
-    return( <div>Story Box</div> ); // Кавычки правда не нужны, из-за jsx
+    const topicsList = [new Date().toTimeString(), 'HTML', 'JavaScript', 'React'];
+    return(
+      <ul>{topicsList.map( topic => <li>{topic}</li> )}</ul>
+    ); // Кавычки правда не нужны, из-за jsx
   }
 }
 ReactDOM.render(
