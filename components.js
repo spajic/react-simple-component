@@ -33,14 +33,28 @@ class Comment extends React.Component {
 }
 
 class CommentBox extends React.Component {
+  _getComments() {
+    const comments = [
+      { id: 1, author: 'Spajic', body: 'Hello' },
+      { id: 2, author: 'Maria', body: 'I love you' },
+      { id: 3, author: 'Wall-E', body: 'What is Love?' }
+    ];
+    // passing unique key helps React performance
+    return comments.map((comment) => {
+      return (
+        <Comment
+          author={comment.author} body={comment.body} key={comment.id}/>
+      );
+    });
+  }
+
   render() {
     return(
       <div className="comment-box">
         <h3>Comments</h3>
         <h4 className="comment-count">2 comments</h4>
         <div className="comment-list">
-          <Comment author="Spajic" body="Hello!" /> {/* Переданные значения будут доступны компоненту в this.props */}
-          <Comment author="Maria" body="I Love You!" />
+          {this._getComments()} {/*JSX know how to render arrays*/}
         </div>
       </div>
     );
