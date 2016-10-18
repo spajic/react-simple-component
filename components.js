@@ -33,6 +33,14 @@ class Comment extends React.Component {
 }
 
 class CommentBox extends React.Component {
+  constructor() {
+    super(); // always call super() first
+
+    this.state = {
+      showComments: false
+    };
+  }
+
   _getComments() {
     const comments = [
       { id: 1, author: 'Spajic', body: 'Hello' },
@@ -48,14 +56,26 @@ class CommentBox extends React.Component {
     });
   }
 
+  _handleClick() {
+    this.setState({ // Always modify state like this, not state.prop = ...
+      showComments: !this.state.showComments
+    });
+  }
+
   render() {
+    let commentNodes;
+    let buttonText = 'Show comments';
+    let comments = this._getComments();
+    if(this.state.showComments) {
+      commentNodes = <div className="comment-list">{comments}</div>;
+      buttonText = 'Hide comments';
+    }
     return(
       <div className="comment-box">
+        <button onClick={this._handleClick.bind(this)}>{buttonText}</button>
         <h3>Comments</h3>
-        <h4 className="comment-count">2 comments</h4>
-        <div className="comment-list">
-          {this._getComments()} {/*JSX know how to render arrays*/}
-        </div>
+        <h4 className="comment-count">{`${comments.length} comments`}</h4>
+        {commentNodes}
       </div>
     );
   }
