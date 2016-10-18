@@ -32,21 +32,53 @@ class Comment extends React.Component {
   }
 }
 
+class CommentForm extends React.Component {
+  render() {
+    return (
+      <form className="comment-form" onSubmit={this._handleSubmit.bind(this)}>
+        <label>Join the discussion</label>
+        <div className="comment-form-fields">
+          {/*use refs to store form inputs in component props
+          React calls ref callbacks on render. */}
+          <input placeholder="Name:" ref={(name) => this._author = name}/>
+          <textarea placeholder="Comment:" ref={(comment) => this._body = comment}></textarea>
+        </div>
+        <div className="comment-form-actions">
+          <button type="submit">
+            Post comment
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  _handleSubmit(event) {
+    event.preventDefault();
+
+    // this._author, this._body установлены в ref-callback'ах
+    let author = this._author.value;
+    let body = this._body.value;
+
+    // Функция addComment прокидывается в props при создании компонента CommentForm родительским компонентом CommentBox
+    this.props.addComment(author, body);
+  }
+}
+
 class CommentBox extends React.Component {
   constructor() {
     super(); // always call super() first
 
     this.state = {
-      showComments: false
+      showComments: false,
+      comments: [
+        { id: 1, author: 'Spajic', body: 'Hello' },
+        { id: 2, author: 'Maria', body: 'I love you' }
+      ]
     };
   }
 
   _getComments() {
-    const comments = [
-      { id: 1, author: 'Spajic', body: 'Hello' },
-      { id: 2, author: 'Maria', body: 'I love you' },
-      { id: 3, author: 'Wall-E', body: 'What is Love?' }
-    ];
+    const comments = this.state.comments;
     // passing unique key helps React performance
     return comments.map((comment) => {
       return (
@@ -62,6 +94,16 @@ class CommentBox extends React.Component {
     });
   }
 
+  _addComment(author, body) {
+    const comment = {
+      id: this.state.comments.length + 1,
+      author,
+      body
+    };
+    // concat yields new reference to array, so react compares faster than with push
+    this.setState({ comments: this.state.comments.concat([comment]) });
+  }
+
   render() {
     let commentNodes;
     let buttonText = 'Show comments';
@@ -72,6 +114,8 @@ class CommentBox extends React.Component {
     }
     return(
       <div className="comment-box">
+        {/* Прокидываем метод создания комментария в дочерний компонент */}
+        <CommentForm addComment={this._addComment.bind(this)}/>
         <button onClick={this._handleClick.bind(this)}>{buttonText}</button>
         <h3>Comments</h3>
         <h4 className="comment-count">{`${comments.length} comments`}</h4>
