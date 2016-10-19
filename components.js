@@ -11,8 +11,6 @@ class StoryBox extends React.Component { // Реакт-компонент все
   }
 }
 
-
-
 ReactDOM.render(
   <StoryBox />, // Вызов компонента
   document.getElementById('story-app') // целевой элемент dom
@@ -93,6 +91,19 @@ class CommentBox extends React.Component {
     this._fetchComments();
   }
 
+  // Не страшно, что мы каждые 5 секунд дёргаем render()
+  // React будет что-либо перерисовывать, только если реально будут изменения
+  // и будет перерисовывать только то, что изменилось
+  componentDidMount() { // begin polling after component first Render
+    this._timer = setInterval( () => this._fetchComments(), 5000 );
+  }
+
+  componentWillUnmount() {
+    // Удаляем созданный таймер, а то он так и останется тикать
+    // Если у нас будет SPA, где при переходе на страницу создаётся компонент
+    // с комментариями, то таймеры будут плодиться при каждом переходе
+    clearInterval(this._timer);
+  }
 
   _getComments() {
     const comments = this.state.comments;
