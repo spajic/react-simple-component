@@ -86,6 +86,7 @@ class CommentBox extends React.Component {
     this._fetchComments();
   }
 
+
   _getComments() {
     const comments = this.state.comments;
     // passing unique key helps React performance
@@ -104,13 +105,20 @@ class CommentBox extends React.Component {
   }
 
   _addComment(author, body) {
-    const comment = {
-      id: this.state.comments.length + 1,
-      author,
-      body
-    };
-    // concat yields new reference to array, so react compares faster than with push
-    this.setState({ comments: this.state.comments.concat([comment]) });
+    const comment = { author, body };
+
+    $.ajax({
+      method: 'POST',
+      url: 'http://localhost:3000/comments',
+      data: { comment },
+      success: (newComment) => {
+        // State is only updated after API response
+        this.setState({
+          // concat yields new reference to array, so react compares faster than with push
+          comments: this.state.comments.concat([newComment])
+        });
+      }
+    });
   }
 
   render() {
