@@ -19,13 +19,20 @@ ReactDOM.render(
 );
 
 class Comment extends React.Component {
+  _handleDelete(event) {
+    event.preventDefault();
+
+    // Вызываем callback, переданный родительским компонентом
+    this.props.onDelete(this.props.comment);
+  }
+
   render() {
     return(
       <div className="comment">
         <p className="comment-header">{this.props.author}</p> {/* props будут переданы при вызове компонента*/}
         <p className="comment-body">{this.props.body}</p>
         <div className="comment-footer">
-          <a href="#" className="comment-footer-delete">Delete comment</a>
+          <a href="#" className="comment-footer-delete" onClick={this._handleDelete.bind(this)}>Delete comment</a>
         </div>
       </div>
     );
@@ -93,7 +100,9 @@ class CommentBox extends React.Component {
     return comments.map((comment) => {
       return (
         <Comment
-          author={comment.author} body={comment.body} key={comment.id}/>
+          comment={comment}
+          author={comment.author} body={comment.body} key={comment.id}
+          onDelete={this._deleteComment.bind(this)}/>
       );
     });
   }
@@ -119,6 +128,19 @@ class CommentBox extends React.Component {
         });
       }
     });
+  }
+
+  _deleteComment(comment) {
+    $.ajax({
+      method: 'DELETE',
+      url: `http://localhost:3000/comments/${comment.id}`
+    });
+    // Optimistic UI-update, не ждём подтверждения от сервера, а сразу удаляем коммент
+    const comments = [...this.state.comments];
+    const deletedCommentIndex = comments.indexOf(comment);
+    comments.splice(deletedCommentIndex, 1);
+
+    this.setState( {comments} );
   }
 
   render() {
