@@ -69,12 +69,21 @@ class CommentBox extends React.Component {
     super(); // always call super() first
 
     this.state = {
-      showComments: false,
-      comments: [
-        { id: 1, author: 'Spajic', body: 'Hello' },
-        { id: 2, author: 'Maria', body: 'I love you' }
-      ]
+      showComments: true,
+      comments: []
     };
+  }
+
+  _fetchComments() {
+    $.ajax({
+      method: 'GET',
+      url: 'http://localhost:3000/comments',
+      success: (comments) => { this.setState( {comments} ) }
+    });
+  }
+
+  componentWillMount() {
+    this._fetchComments();
   }
 
   _getComments() {
